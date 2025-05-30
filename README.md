@@ -38,7 +38,9 @@ modern-css-grid-generator/
 
 ## 🖼️ Screenshots
 
-> Add screenshots here for visual representation.
+![Screenshot 1](cssgrid.png)
+
+![Screenshot 2](Cssgridgenerator.png)
 
 ## 📜 License
 
