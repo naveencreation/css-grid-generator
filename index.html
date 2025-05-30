@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern CSS Grid Generator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-solid: #667eea;
+            --secondary: #f093fb;
+            --accent: #4facfe;
+            --success: #00f2fe;
+            --dark: #1a1d29;
+            --dark-light: #252837;
+            --text: #e4e6ea;
+            --text-muted: #9ca3af;
+            --border: #374151;
+            --bg-gradient: linear-gradient(135deg, #0c0c0c 0%, #1a1d29 100%);
+            --card-bg: rgba(37, 40, 55, 0.8);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --shadow-xl: 0 35px 70px -15px rgba(0, 0, 0, 0.6);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(118, 75, 162, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(79, 172, 254, 0.1) 0%, transparent 50%);
+            animation: backgroundPulse 10s ease-in-out infinite alternate;
+            z-index: -1;
+        }
+        
+        @keyframes backgroundPulse {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.6; }
+        }
+        
+        .app-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 30px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        
+        .controls {
+            flex: 1;
+            min-width: 350px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+            position: sticky;
+            top: 30px;
+            height: fit-content;
+        }
+        
+        .controls:hover {
+            box-shadow: var(--shadow-xl);
+            transform: translateY(-2px);
+        }
+        
+        .preview {
+            flex: 2;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+        }
+        
+        .preview:hover {
+            box-shadow: var(--shadow-xl);
+        }
+        
+        h1 {
+            background: var(--primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        h2 {
+            color: var(--text);
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        h2::before {
+            content: '';
+            width: 4px;
+            height: 25px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+        
+        h3 {
+            color: var(--accent);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .control-group {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .control-group:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(102, 126, 234, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 1rem;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-solid);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        input:hover, select:hover {
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+        
+        .generate-btn {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .generate-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .generate-btn:hover::before {
+            left: 100%;
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .generate-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .grid-container {
+            min-height: 450px;
+            border: 2px dashed rgba(102, 126, 234, 0.3);
+            margin-bottom: 30px;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .grid-container:hover {
+            border-color: rgba(102, 126, 234, 0.6);
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.1);
+        }
+        
+        .grid-item {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .grid-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .grid-item:hover {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+        
+        .grid-item:hover::before {
+            opacity: 1;
+        }
+        
+        .tab-buttons {
+            display: flex;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 4px;
+            gap: 4px;
+        }
+        
+        .tab-button {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 12px 20px;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .tab-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+        }
+        
+        .tab-button.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .code-output {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 25px;
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;  
+            color: #e5e7eb;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+        
+        .code-output::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--primary);
+        }
+        
+        .copy-btn {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 172, 254, 0.4);
+        }
+        
+        #custom-sizing-container {
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        #custom-sizing-container.show {
+            opacity: 1;
+            max-height: 100px;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary);
+        }
+        
+        @media (max-width: 1024px) {
+            .app-container {
+                flex-direction: column;
+                padding: 20px;
+            }
+            
+            .controls {
+                position: static;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        .generate-btn.loading {
+            pointer-events: none;
+        }
+        
+        .generate-btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        @keyframes spin {
+            0% { transform: translateY(-50%) rotate(0deg); }
+            100% { transform: translateY(-50%) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="controls">
+            <h1>Grid Forge</h1>
+            
+            <div class="control-group">
+                <h3>Grid Layout</h3>
+                <label for="rows">Rows</label>
+                <input type="number" id="rows" min="1" max="12" value="3">
+                
+                <label for="columns">Columns</label>
+                <input type="number" id="columns" min="1" max="12" value="3">
+                
+                <label for="row-gap">Row Gap (px)</label>
+                <input type="number" id="row-gap" min="0" max="50" value="10">
+                
+                <label for="column-gap">Column Gap (px)</label>
+                <input type="number" id="column-gap" min="0" max="50" value="10">
+            </div>
+            
+            <div class="control-group">
+                <h3>Item Sizing</h3>
+                <label for="item-sizing">Column Sizing</label>
+                <select id="item-sizing">
+                    <option value="1fr" style="color:black;">Equal (1fr)</option>
+                    <option value="auto" style="color:black;">Auto</option>
+                    <option value="100px" style="color:black;">Fixed (100px)</option>
+                    <option value="custom" style="color:black;">Custom</option>
+                </select>
+                
+                <div id="custom-sizing-container">
+                    <label for="custom-sizing">Custom Sizing</label>
+                    <input type="text" id="custom-sizing" placeholder="e.g. 1fr 2fr 1fr">
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <h3>Alignment</h3>
+                <label for="justify-items">Justify Items</label>
+                <select id="justify-items">
+                    <option value="stretch" style="color:black;">Stretch</option>
+                    <option value="start" style="color:black;">Start</option>
+                    <option value="end" style="color:black;">End</option>
+                    <option value="center" style="color:black;">Center</option>
+                </select>
+                
+                <label for="align-items">Align Items</label>
+                <select id="align-items">
+                    <option value="stretch" style="color:black;">Stretch</option>
+                    <option value="start" style="color:black;">Start</option>
+                    <option value="end" style="color:black;">End</option>
+                    <option value="center" style="color:black;">Center</option>
+                </select>
+            </div>
+            
+            <button id="generate-btn" class="generate-btn">Generate Grid</button>
+        </div>
+        
+        <div class="preview">
+            <h2>Live Preview</h2>
+            <div id="grid-container" class="grid-container"></div>
+            
+            <h2>Generated Code</h2>
+            <div class="tab-buttons">
+                <button class="tab-button active" data-tab="html">HTML</button>
+                <button class="tab-button" data-tab="css">CSS</button>
+            </div>
+            
+            <div id="html-tab" class="tab-content active">
+                <div class="code-output" id="html-output"></div>
+                <button id="copy-html" class="copy-btn">Copy HTML</button>
+            </div>
+            
+            <div id="css-tab" class="tab-content">
+                <div class="code-output" id="css-output"></div>
+                <button id="copy-css" class="copy-btn">Copy CSS</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.getAttribute('data-tab');
+                    
+                    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+                    
+                    button.classList.add('active');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+            
+            const itemSizing = document.getElementById('item-sizing');
+            const customSizingContainer = document.getElementById('custom-sizing-container');
+            
+            itemSizing.addEventListener('change', function() {
+                if (this.value === 'custom') {
+                    customSizingContainer.classList.add('show');
+                } else {
+                    customSizingContainer.classList.remove('show');
+                }
+            });
+            
+            const generateBtn = document.getElementById('generate-btn');
+            generateBtn.addEventListener('click', () => {
+                generateBtn.classList.add('loading');
+                setTimeout(() => {
+                    generateGrid();
+                    generateBtn.classList.remove('loading');
+                }, 500);
+            });
+            
+            const inputs = document.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('input', generateGrid);
+                input.addEventListener('change', generateGrid);
+            });
+            
+            generateGrid();
+            
+            function generateGrid() {
+                const rows = parseInt(document.getElementById('rows').value);
+                const columns = parseInt(document.getElementById('columns').value);
+                const rowGap = document.getElementById('row-gap').value;
+                const columnGap = document.getElementById('column-gap').value;
+                const justifyItems = document.getElementById('justify-items').value;
+                const alignItems = document.getElementById('align-items').value;
+                
+                let columnSizing;
+                const sizingOption = itemSizing.value;
+                
+                if (sizingOption === 'custom') {
+                    columnSizing = document.getElementById('custom-sizing').value || '1fr';
+                } else {
+                    columnSizing = sizingOption;
+                    columnSizing = Array(columns).fill(sizingOption).join(' ');
+                }
+                
+                const gridContainer = document.getElementById('grid-container');
+                gridContainer.style.display = 'grid';
+                gridContainer.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+                gridContainer.style.gridTemplateColumns = columnSizing;
+                gridContainer.style.gap = `${rowGap}px ${columnGap}px`;
+                gridContainer.style.justifyItems = justifyItems;
+                gridContainer.style.alignItems = alignItems;
+                
+                gridContainer.innerHTML = '';
+                
+                const totalItems = rows * columns;
+                for (let i = 0; i < totalItems; i++) {
+                    const item = document.createElement('div');
+                    item.className = 'grid-item';
+                    item.textContent = i + 1;
+                    item.style.animationDelay = `${i * 0.05}s`;
+                    gridContainer.appendChild(item);
+                }
+                
+                generateCodeOutput(rows, columns, rowGap, columnGap, justifyItems, alignItems, columnSizing);
+            }
+            
+            function generateCodeOutput(rows, columns, rowGap, columnGap, justifyItems, alignItems, columnSizing) {
+                const htmlOutput = document.getElementById('html-output');
+                let htmlCode = `<div class="grid-container">\n`;
+                
+                for (let i = 0; i < rows * columns; i++) {
+                    htmlCode += `  <div class="grid-item">${i + 1}</div>\n`;
+                }
+                
+                htmlCode += `</div>`;
+                htmlOutput.textContent = htmlCode;
+                
+                const cssOutput = document.getElementById('css-output');
+                let cssCode = `.grid-container {\n`;
+                cssCode += `  display: grid;\n`;
+                cssCode += `  grid-template-rows: repeat(${rows}, 1fr);\n`;
+                cssCode += `  grid-template-columns: ${columnSizing};\n`;
+                cssCode += `  gap: ${rowGap}px ${columnGap}px;\n`;
+                cssCode += `  justify-items: ${justifyItems};\n`;
+                cssCode += `  align-items: ${alignItems};\n`;
+                cssCode += `}\n\n`;
+                cssCode += `.grid-item {\n`;
+                cssCode += `  background: linear-gradient(135deg, #667eea, #764ba2);\n`;
+                cssCode += `  color: white;\n`;
+                cssCode += `  display: flex;\n`;
+                cssCode += `  align-items: center;\n`;
+                cssCode += `  justify-content: center;\n`;
+                cssCode += `  border-radius: 8px;\n`;
+                cssCode += `  font-weight: 600;\n`;
+                cssCode += `}`;
+                
+                cssOutput.textContent = cssCode;
+            }
+            
+            function setupCopyButton(buttonId, getContent) {
+                const button = document.getElementById(buttonId);
+                button.addEventListener('click', async () => {
+                    try {
+                        await navigator.clipboard.writeText(getContent());
+                        const originalText = button.textContent;
+                        button.textContent = 'Copied!';
+                        button.style.background = 'linear-gradient(135deg, #00f2fe, #4facfe)';
+                        
+                        setTimeout(() => {
+                            button.textContent = originalText;
+                            button.style.background = 'linear-gradient(135deg, #4facfe, #00f2fe)';
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Failed to copy: ', err);
+                        alert('Failed to copy to clipboard');
+                    }
+                });
+            }
+            
+            setupCopyButton('copy-html', () => document.getElementById('html-output').textContent);
+            setupCopyButton('copy-css', () => document.getElementById('css-output').textContent);
+        });
+    </script>
+</body>
+</html>
