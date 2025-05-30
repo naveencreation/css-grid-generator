@@ -38,8 +38,6 @@ modern-css-grid-generator/
 
 ## 🖼️ Screenshots
 
-![Screenshot 1](cssgrid.png)
-
 ![Screenshot 2](Cssgridgenerator.png)
 
 ## 📜 License
